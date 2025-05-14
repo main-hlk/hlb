@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>HLB - Ana Sayfa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>HLB Kartlarınız</h2>
+  <div id="cardList"></div>
+
+  <hr />
+  <a href="index.html">Yeni Kart Ekle</a>
+  <button onclick="clearCards()">Tüm Kartları Sil</button>
+
+  <script>
+    const cards = JSON.parse(localStorage.getItem("userCards")) || [];
+
+    if (cards.length === 0) {
+      document.getElementById("cardList").innerHTML = "<p>Hiç kart eklenmemiş.</p>";
+    } else {
+      const list = cards.map(card => `
+        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+          <strong>Kart No:</strong> ${card.cardNumber}<br>
+          <strong>Bakiye:</strong> ${card.balance} HL
+        </div>
+      `).join('');
+      document.getElementById("cardList").innerHTML = list;
+    }
+
+    function clearCards() {
+      localStorage.removeItem("userCards");
+      location.reload();
+    }
+  </script>
+</body>
+</html>

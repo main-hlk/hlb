@@ -1,0 +1,198 @@
+/* Genel Stil */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fb;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  margin: 0;
+}
+
+.container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+h1, h2, h3 {
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+input, button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+input:focus, button:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+button {
+  background-color: #3b82f6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* İçerik Düzenleme */
+.nav a {
+  display: inline-block;
+  padding: 12px 20px;
+  margin: 10px 5px;
+  background-color: #0077cc;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.nav a:hover {
+  background-color: #005fa3;
+}
+
+/* Formlar */
+form {
+  margin-bottom: 20px;
+}
+
+input[type="text"], input[type="number"], input[type="password"] {
+  background-color: #f9fafb;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 10px;
+  padding: 12px;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus {
+  border-color: #2563eb;
+}
+
+/* Kartlar */
+.card {
+  background-color: #f1f5f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+.card p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* Ürün Kartları */
+.product {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.product:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product h3 {
+  color: #1e293b;
+  font-size: 20px;
+}
+
+.product p {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.product button {
+  background-color: #16a34a;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.product button:hover {
+  background-color: #15803d;
+}
+
+/* Admin Panel */
+#adminPanel {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#adminPanel h3 {
+  color: #2563eb;
+}
+
+#adminPanel input {
+  margin-bottom: 15px;
+}
+
+#adminMessage {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #16a34a;
+}
+
+/* Genel Bağlantılar */
+hr {
+  border: 1px solid #e2e8f0;
+  margin: 20px 0;
+}
+
+footer {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 20px;
+}

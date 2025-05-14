@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kart Ekle</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Kart Ekle Başlığı Ortalama */
+    #kartEkleHeader {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+
+    /* Kart Ekle Başlık için Alanı Tam Ortalamak */
+    .kartEkleContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    /* Form ve input düzenlemesi */
+    .kartEkleContainer form {
+      width: 100%;
+      max-width: 400px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .kartEkleContainer input, .kartEkleContainer button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .kartEkleContainer button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .kartEkleContainer button:hover {
+      background-color: #2563eb;
+    }
+
+    /* Ana Sayfaya Dön Butonu Stili */
+    button {
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container kartEkleContainer">
+    <h1 id="kartEkleHeader">Kart Ekle</h1>
+    <form action="kart-ekle.php" method="post">
+      <label for="kartNo">Kart Numarası:</label>
+      <input type="text" id="kartNo" name="kartNo" required>
+
+      <label for="cvc">CVC:</label>
+      <input type="text" id="cvc" name="cvc" required>
+
+      <button type="submit">Kartı Ekle</button>
+    </form>
+
+    <!-- Ana Sayfaya Dön Butonu -->
+    <button onclick="window.location.href='index.html';">Ana Sayfaya Dön</button>
+  </div>
+</body>
+</html>

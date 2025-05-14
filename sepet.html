@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Sepetiniz</h1>
+        <!-- Ana sayfaya dönüş butonu -->
+        <button onclick="window.location.href='index.html'">Ana Sayfaya Dön</button>
+    </div>
+
+    <div class="cart">
+        <ul id="cartItems">
+            <!-- Sepet ürünleri burada görüntülenecek -->
+        </ul>
+        <div>
+            <p>Toplam Fiyat: <span id="totalPrice">0</span> HL</p>
+        </div>
+        <button onclick="checkout()">Satın Al</button>
+    </div>
+
+    <script>
+        // Sepetteki ürünlerin listesi (örnek)
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Sepet öğelerini ve toplam fiyatı görüntüle
+        function displayCart() {
+            const cartItemsList = document.getElementById('cartItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+            cartItemsList.innerHTML = '';
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - ${item.price} HL`;
+                cartItemsList.appendChild(li);
+                totalPrice += item.price;
+            });
+
+            totalPriceElement.textContent = totalPrice;
+        }
+
+        // Sepet işlemi tamamlandığında e-posta gönder
+        function checkout() {
+            if (cart.length > 0) {
+                // Sepet içeriğini e-posta olarak göndermek için AJAX isteği yap
+                const productNames = cart.map(item => item.name);
+                const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+
+                // AJAX isteği ile PHP'yi çağır
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST", "email.php", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        alert(this.responseText);  // PHP yanıtını göster
+                    }
+                };
+                
+                // POST verilerini gönder
+                xhttp.send("productNames=" + JSON.stringify(productNames) + "&totalPrice=" + totalPrice);
+
+                // Sepeti temizle ve yönlendir
+                localStorage.removeItem('cart');
+                window.location.href = 'index.html';  // Ana sayfaya yönlendir
+            } else {
+                alert("Sepetiniz boş!");
+            }
+        }
+
+        // Sayfa yüklendiğinde sepete ekli öğeleri göster
+        displayCart();
+    </script>
+</body>
+</html>
