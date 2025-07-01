@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>HLBank - Panel</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Aynı head kısmı -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- Aynı header -->
     <header>
-        <nav>
-            <a href="dashboard.html">Kartlarım</a>
-            <a href="dashboard.html#transactions">İşlemler</a>
-            <a href="dashboard.html#store">Mağaza</a>
-            <button id="logoutBtn">Çıkış Yap</button>
-        </nav>
+        <div class="container header-container">
+            <div class="logo">HL<span>Bank</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-section="cards">Kartlarım</a></li>
+                    <li><a href="#" class="nav-link" data-section="transactions">İşlemler</a></li>
+                    <li><a href="#" class="nav-link" data-section="store">Mağaza</a></li>
+                    <li><a href="#" class="nav-link" data-section="profile">Profil</a></li>
+                </ul>
+            </nav>
+            <button class="form-submit" id="logoutBtn">Çıkış Yap</button>
+        </div>
     </header>
 
-    <main>
-        <section id="cards">
-            <!-- Kartlar burada görünecek -->
-        </section>
-    </main>
+    <!-- Aynı dashboard içeriği -->
+    <div class="dashboard" id="dashboard">
+        <!-- Tüm orjinal dashboard HTML'i -->
+    </div>
 
-    <script src="js/main.js"></script>
-    <script src="js/cards.js"></script>
-    <script src="js/store.js"></script>
+    <!-- Aynı modal yapıları -->
+    <div class="modal" id="addCardModal">
+        <!-- Orjinal add card modal -->
+    </div>
+
+    <div class="modal" id="buyProductModal">
+        <!-- Orjinal buy product modal -->
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
