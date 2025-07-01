@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLBank - Gelişmiş Bankacılık Sistemi</title>
+    <style>
+        :root {
+            --primary-color: #005baa;
+            --secondary-color: #ff6600;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .auth-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        .login-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .register-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #003366);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #e65c00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 50px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+        
+        /* Cards Section */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-body p {
+            margin-bottom: 15px;
+        }
+        
+        .card-footer {
+            padding: 15px;
+            background-color: var(--light-color);
+            text-align: center;
+        }
+        
+        .card-button {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-button:hover {
+            background-color: #004a8f;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .form-submit:hover {
+            background-color: #004a8f;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+        
+        .dashboard-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-message {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .balance {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-nav a {
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-nav a:hover, .dashboard-nav a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .dashboard-section {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-section.active {
+            display: block;
+        }
+        
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .bank-card {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            height: 180px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bank-card.gold {
+            background: linear-gradient(135deg, #b8860b, #daa520);
+        }
+        
+        .bank-card.platinum {
+            background: linear-gradient(135deg, #556270, #4ecdc4);
+        }
+        
+        .card-type {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-weight: bold;
+        }
+        
+        .card-number {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin: 40px 0 20px;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .add-card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-color);
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            height: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-card-btn:hover {
+            border-color: var(--primary-color);
+            background-color: #e6f0fa;
+        }
+        
+        .add-card-btn i {
+            font-size: 40px;
+            color: var(--primary-color);
+        }
+        
+        /* Transactions */
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .transactions-table th, .transactions-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .transactions-table th {
+            background-color: var(--light-color);
+            font-weight: 500;
+        }
+        
+        .transaction-amount.positive {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .transaction-amount.negative {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        
+        /* Store */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 180px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #777;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .buy-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-btn:hover {
+            background-color: #004a8f;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin: 20px 0;
+            }
+            
+            .auth-buttons {
+                margin-bottom: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .dashboard-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">HL<span>Bank</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-section="home">Ana Sayfa</a></li>
+                    <li><a href="#" class="nav-link" data-section="cards">Kartlar</a></li>
+                    <li><a href="#" class="nav-link" data-section="transactions">İşlemler</a></li>
+                    <li><a href="#" class="nav-link" data-section="store">Mağaza</a></li>
+                    <li><a href="#" class="nav-link" data-section="profile">Profil</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="login-btn" id="loginBtn">Giriş Yap</button>
+                <button class="register-btn" id="registerBtn">Kayıt Ol</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>HLBank ile Geleceğin Bankacılığı</h1>
+            <p>HL para birimi ile güvenli ve hızlı işlemler yapın, mağazamızdan dilediğiniz ürünleri satın alın.</p>
+            <a href="#" class="cta-button" id="heroRegisterBtn">Hesap Aç</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard (Visible after login) -->
+            <div class="dashboard" id="dashboard">
+                <div class="dashboard-header">
+                    <div class="welcome-message">Hoş geldiniz, <span id="userName">Kullanıcı Adı</span></div>
+                    <div class="balance">Bakiye: <span id="userBalance">0</span> HL</div>
+                </div>
+                
+                <div class="dashboard-nav">
+                    <a href="#" class="dashboard-nav-link active" data-section="cards">Kartlarım</a>
+                    <a href="#" class="dashboard-nav-link" data-section="transactions">İşlemler</a>
+                    <a href="#" class="dashboard-nav-link" data-section="store">Mağaza</a>
+                    <a href="#" class="dashboard-nav-link" data-section="profile">Profil</a>
+                </div>
+                
+                <!-- Cards Section -->
+                <div class="dashboard-section active" id="cards-section">
+                    <h2 class="section-title">Kartlarım</h2>
+                    <div class="card-list" id="cardList">
+                        <!-- Cards will be added here dynamically -->
+                    </div>
+                    <div class="add-card-btn" id="addCardBtn">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                </div>
+                
+                <!-- Transactions Section -->
+                <div class="dashboard-section" id="transactions-section">
+                    <h2 class="section-title">İşlem Geçmişi</h2>
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Açıklama</th>
+                                <th>Miktar</th>
+                                <th>Bakiye</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <!-- Transactions will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Store Section -->
+                <div class="dashboard-section" id="store-section">
+                    <h2 class="section-title">Mağaza</h2>
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Products will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Profile Section -->
+                <div class="dashboard-section" id="profile-section">
+                    <h2 class="section-title">Profil Bilgileri</h2>
+                    <div class="form-group">
+                        <label for="profileName">Ad Soyad</label>
+                        <input type="text" id="profileName" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">E-posta</label>
+                        <input type="email" id="profileEmail" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhone">Telefon</label>
+                        <input type="text" id="profilePhone" disabled>
+                    </div>
+                    <button class="form-submit" id="logoutBtn">Çıkış Yap</button>
+                </div>
+            </div>
+            
+            <!-- Public Content (Visible before login) -->
+            <div id="publicContent">
+                <h2 class="section-title">HLBank Avantajları</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">Güvenli İşlemler</div>
+                        <div class="card-body">
+                            <p>HLBank ile tüm işlemleriniz 256-bit şifreleme ile korunmaktadır. Paranız ve bilgileriniz güvende.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="card-button">Daha Fazla Bilgi</a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">HL Para Birimi</div>
+                        <div class="card-body">
+                            <p>Yeni nesil HL para birimi ile alışverişlerinizi kolayca yapabilir, mağazamızdan ürün satın alabilirsiniz.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="card-button">Daha Fazla Bilgi</a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">7/24 Destek</div>
+                        <div class="card-body">
+                            <p>HLBank müşteri hizmetleri 7 gün 24 saat sizinle. Her türlü sorunuz için bize ulaşabilirsiniz.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="card-button">Daha Fazla Bilgi</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>HLBank</h3>
+                    <ul>
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">Kariyer</a></li>
+                        <li><a href="#">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Ürünler</h3>
+                    <ul>
+                        <li><a href="#">Kredi Kartları</a></li>
+                        <li><a href="#">HL Para</a></li>
+                        <li><a href="#">Mağaza</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Yardım</h3>
+                    <ul>
+                        <li><a href="#">SSS</a></li>
+                        <li><a href="#">Şube Bul</a></li>
+                        <li><a href="#">Canlı Destek</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Yasal</h3>
+                    <ul>
+                        <li><a href="#">Gizlilik Politikası</a></li>
+                        <li><a href="#">Kullanım Şartları</a></li>
+                        <li><a href="#">Çerez Politikası</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 HLBank. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Giriş Yap</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">E-posta</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Şifre</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="form-submit">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Kayıt Ol</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Ad Soyad</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-posta</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Telefon</label>
+                    <input type="text" id="registerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Şifre</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Şifre Tekrar</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                </div>
+                <button type="submit" class="form-submit">Kayıt Ol</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Card Modal -->
+    <div class="modal" id="addCardModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Kart Ekle</h2>
+            <form id="addCardForm">
+                <div class="form-group">
+                    <label for="cardNumber">Kart Numarası</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardHolder">Kart Sahibi</label>
+                    <input type="text" id="cardHolder" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardExpiry">Son Kullanma Tarihi</label>
+                    <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardCvc">CVC</label>
+                    <input type="text" id="cardCvc" placeholder="123" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardType">Kart Türü</label>
+                    <select id="cardType" required>
+                        <option value="standard">Standart Kart</option>
+                        <option value="gold">Gold Kart</option>
+                        <option value="platinum">Platinum Kart</option>
+                    </select>
+                </div>
+                <button type="submit" class="form-submit">Kartı Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Buy Product Modal -->
+    <div class="modal" id="buyProductModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Satın Al</h2>
+            <div id="buyProductInfo"></div>
+            <form id="buyProductForm">
+                <div class="form-group">
+                    <label for="paymentCard">Ödeme Yapılacak Kart</label>
+                    <select id="paymentCard" required>
+                        <!-- Cards will be added here dynamically -->
+                    </select>
+                </div>
+                <button type="submit" class="form-submit">Satın Al</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Database simulation
+        let users = [];
+        let cards = [];
+        let transactions = [];
+        let currentUser = null;
+        
+        // Predefined products
+        const products = [
+            { id: 1, name: "HLgame(1 tur)", price: 100, description: "1 tur HL oyun deneyimi" },
+            { id: 2, name: "Tezgah Stars Ön Bilet", price: 10000, description: "Tezgah Stars etkinliği ön bilet" },
+            { id: 3, name: "Tezgah Stars Ön Bilet Pro Açılı", price: 15000, description: "Tezgah Stars etkinliği VIP ön bilet" }
+        ];
+        
+        // Predefined card types with initial balances
+        const cardTypes = {
+            standard: { name: "Standart Kart", balance: 5000 },
+            gold: { name: "Gold Kart", balance: 15000 },
+            platinum: { name: "Platinum Kart", balance: 30000 }
+        };
+        
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const addCardModal = document.getElementById('addCardModal');
+        const buyProductModal = document.getElementById('buyProductModal');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const addCardForm = document.getElementById('addCardForm');
+        const buyProductForm = document.getElementById('buyProductForm');
+        const addCardBtn = document.getElementById('addCardBtn');
+        const dashboard = document.getElementById('dashboard');
+        const publicContent = document.getElementById('publicContent');
+        const cardList = document.getElementById('cardList');
+        const transactionsBody = document.getElementById('transactionsBody');
+        const productsGrid = document.getElementById('productsGrid');
+        const userName = document.getElementById('userName');
+        const userBalance = document.getElementById('userBalance');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const dashboardNavLinks = document.querySelectorAll('.dashboard-nav-link');
+        const dashboardSections = document.querySelectorAll('.dashboard-section');
+        
+        // Close modals when clicking on X
+        document.querySelectorAll('.close-modal').forEach(closeBtn => {
+            closeBtn.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+        
+        // Show login modal
+        loginBtn.addEventListener('click', function() {
+            loginModal.style.display = 'flex';
+        });
+        
+        // Show register modal
+        registerBtn.addEventListener('click', function() {
+            registerModal.style.display = 'flex';
+        });
+        
+        // Show register modal from hero button
+        heroRegisterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerModal.style.display = 'flex';
+        });
+        
+        // Login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Find user
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                updateUIAfterLogin();
+                loginModal.style.display = 'none';
+                loginForm.reset();
+            } else {
+                alert('Geçersiz e-posta veya şifre!');
+            }
+        });
+        
+        // Register form submission
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Şifreler eşleşmiyor!');
+                return;
+            }
+            
+            // Check if email already exists
+            if (users.some(u => u.email === email)) {
+                alert('Bu e-posta adresi zaten kullanılıyor!');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                phone,
+                password,
+                balance: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            currentUser = newUser;
+            
+            updateUIAfterLogin();
+            registerModal.style.display = 'none';
+            registerForm.reset();
+            
+            // Add welcome transaction
+            addTransaction(currentUser.id, 'Hoş geldiniz bonusu', 1000, currentUser.balance + 1000);
+            currentUser.balance += 1000;
+            
+            alert('Kayıt başarılı! Hoş geldiniz bonusu olarak 1000 HL hesabınıza yatırıldı.');
+        });
+        
+        // Add card button click
+        addCardBtn.addEventListener('click', function() {
+            addCardModal.style.display = 'flex';
+        });
+        
+        // Add card form submission
+        addCardForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const cardHolder = document.getElementById('cardHolder').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            const cardCvc = document.getElementById('cardCvc').value;
+            const cardType = document.getElementById('cardType').value;
+            
+            // Validate card number length (16 digits)
+            if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                alert('Geçersiz kart numarası! 16 haneli kart numarası giriniz.');
+                return;
+            }
+            
+            // Check if card already exists in the system
+            const existingCard = cards.find(c => c.number === cardNumber);
+            if (existingCard) {
+                alert('Bu kart zaten başka bir hesaba kayıtlı!');
+                return;
+            }
+            
+            // Create new card
+            const newCard = {
+                id: Date.now().toString(),
+                userId: currentUser.id,
+                number: cardNumber,
+                displayNumber: '**** **** **** ' + cardNumber.slice(-4),
+                holder: cardHolder,
+                expiry: cardExpiry,
+                cvc: cardCvc,
+                type: cardType,
+                balance: cardTypes[cardType].balance,
+                createdAt: new Date().toISOString()
+            };
+            
+            cards.push(newCard);
+            renderUserCards();
+            addCardModal.style.display = 'none';
+            addCardForm.reset();
+            
+            // Add transaction
+            addTransaction(currentUser.id, `${cardTypes[cardType].name} eklendi`, 0, currentUser.balance);
+            
+            alert('Kart başarıyla eklendi!');
+        });
+        
+        // Buy product form submission
+        buyProductForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productId = parseInt(this.dataset.productId);
+            const cardId = document.getElementById('paymentCard').value;
+            const product = products.find(p => p.id === productId);
+            const card = cards.find(c => c.id === cardId && c.userId === currentUser.id);
+            
+            if (!product || !card) {
+                alert('Bir hata oluştu!');
+                return;
+            }
+            
+            // Check balance
+            if (card.balance < product.price) {
+                alert('Yetersiz bakiye!');
+                return;
+            }
+            
+            // Process payment
+            card.balance -= product.price;
+            currentUser.balance -= product.price;
+            
+            // Add transaction
+            addTransaction(currentUser.id, `${product.name} satın alındı`, -product.price, currentUser.balance);
+            
+            // Update UI
+            renderUserCards();
+            userBalance.textContent = currentUser.balance;
+            
+            buyProductModal.style.display = 'none';
+            alert('Satın alma işlemi başarılı!');
+        });
+        
+        // Update UI after login
+        function updateUIAfterLogin() {
+            publicContent.style.display = 'none';
+            dashboard
