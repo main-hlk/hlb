@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HL Bank - Gelişmiş Bankacılık Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --hl-color: #8a2be2;
+            --admin-color: #d63384;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--hl-color) !important;
+        }
+        
+        .hl-currency {
+            color: var(--hl-color);
+            font-weight: bold;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-hl {
+            background-color: var(--hl-color);
+            color: white;
+        }
+        
+        .btn-hl:hover {
+            background-color: #7b1fa2;
+            color: white;
+        }
+        
+        .btn-admin {
+            background-color: var(--admin-color);
+            color: white;
+        }
+        
+        .btn-admin:hover {
+            background-color: #a02d6a;
+            color: white;
+        }
+        
+        .account-balance {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .transaction-item {
+            border-left: 4px solid var(--success-color);
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .transaction-item.debit {
+            border-left-color: var(--danger-color);
+        }
+        
+        .product-card {
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            color: var(--hl-color);
+            border-bottom: 3px solid var(--hl-color);
+        }
+        
+        #securityFeatures {
+            display: none;
+        }
+        
+        .security-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .credit-card {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            height: 180px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .credit-card .card-type {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .credit-card .card-number {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 30px;
+        }
+        
+        .credit-card .card-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        
+        .biometric-login {
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        
+        .admin-badge {
+            background-color: var(--admin-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Admin Panel Stilleri */
+        #adminPage {
+            display: none;
+        }
+        
+        .admin-card {
+            border-left: 4px solid var(--admin-color);
+        }
+        
+        .card-request {
+            border-left: 4px solid var(--warning-color);
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+        
+        .pending-badge {
+            background-color: var(--warning-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-university me-2"></i>HL Bank
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="homeLink"><i class="fas fa-home me-1"></i> Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="accountsLink"><i class="fas fa-wallet me-1"></i> Hesaplarım</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="cardsLink"><i class="fas fa-credit-card me-1"></i> Kartlarım</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="transferLink"><i class="fas fa-exchange-alt me-1"></i> Transfer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="shopLink"><i class="fas fa-shopping-cart me-1"></i> HL Mağaza</a>
+                    </li>
+                    <li class="nav-item d-none" id="adminNavItem">
+                        <a class="nav-link" href="#" id="adminLink"><i class="fas fa-user-shield me-1"></i> Admin Panel</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center" id="authButtons">
+                    <button class="btn btn-outline-light me-2" id="loginBtn"><i class="fas fa-sign-in-alt me-1"></i> Giriş Yap</button>
+                    <button class="btn btn-hl" id="registerBtn"><i class="fas fa-user-plus me-1"></i> Kayıt Ol</button>
+                </div>
+                <div class="d-flex align-items-center d-none" id="userProfile">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span id="usernameDisplay"></span>
+                            <span id="adminBadge" class="admin-badge ms-2 d-none">ADMIN</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="profileLink"><i class="fas fa-user me-1"></i> Profilim</a></li>
+                            <li><a class="dropdown-item" href="#" id="settingsLink"><i class="fas fa-cog me-1"></i> Ayarlar</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logoutLink"><i class="fas fa-sign-out-alt me-1"></i> Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container">
+        <div class="toast align-items-center text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i> <span id="successMessage"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="toast align-items-center text-white bg-danger" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-circle me-2"></i> <span id="errorMessage"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container my-5" id="mainContent">
+        <!-- Home Page -->
+        <div id="homePage">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Hoş Geldiniz</h5>
+                            <div class="security-badge">
+                                <i class="fas fa-lock me-1"></i> Güvenli Bankacılık
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>HL Bank'a Hoş Geldiniz</h4>
+                                    <p>Güvenli ve kolay bankacılık işlemleriniz için her zaman yanınızdayız. Hesaplarınızı yönetebilir, transfer yapabilir ve HL Mağaza'dan alışveriş yapabilirsiniz.</p>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i> Yeni müşterilerimize özel 500 HL hoş geldiniz bonusu!
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-center">
+                                        <img src="https://via.placeholder.com/300x200?text=HL+Bank" alt="HL Bank" class="img-fluid rounded">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Hızlı İşlemler</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-hl mb-2" id="quickTransferBtn"><i class="fas fa-exchange-alt me-1"></i> Hızlı Transfer</button>
+                                <button class="btn btn-outline-primary mb-2" id="quickPayBtn"><i class="fas fa-credit-card me-1"></i> Fatura Öde</button>
+                                <button class="btn btn-outline-success mb-2" id="quickShopBtn"><i class="fas fa-shopping-cart me-1"></i> HL Mağaza</button>
+                                <button class="btn btn-outline-info" id="quickSupportBtn"><i class="fas fa-headset me-1"></i> Canlı Destek</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Hesap Özeti</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <h6>Toplam Bakiyeniz</h6>
+                                <div class="account-balance"><span id="totalBalance">0</span> <span class="hl-currency">HL</span></div>
+                            </div>
+                            <div class="transaction-list">
+                                <h6>Son İşlemler</h6>
+                                <div id="recentTransactions">
+                                    <div class="transaction-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>HL Mağaza Alışveriş</strong>
+                                                <div class="text-muted small">12.07.2023</div>
+                                            </div>
+                                            <div class="text-danger">-150 <span class="hl-currency">HL</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>Para Transferi (Ahmet Y.)</strong>
+                                                <div class="text-muted small">10.07.2023</div>
+                                            </div>
+                                            <div class="text-success">+500 <span class="hl-currency">HL</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Kartlarım</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="creditCardsCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner" id="creditCardsList">
+                                    <!-- Kartlar buraya dinamik olarak eklenecek -->
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#creditCardsCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Önceki</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#creditCardsCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Sonraki</span>
+                                </button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button class="btn btn-hl" id="addNewCardBtn"><i class="fas fa-plus me-1"></i> Yeni Kart Ekle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounts Page -->
+        <div id="accountsPage" class="d-none">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-wallet me-2"></i> Hesaplarım</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Hesap No</th>
+                                    <th>Hesap Adı</th>
+                                    <th>Bakiye</th>
+                                    <th>IBAN</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountsTable">
+                                <!-- Hesaplar buraya dinamik olarak eklenecek -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-hl mt-3" id="addNewAccountBtn"><i class="fas fa-plus me-1"></i> Yeni Hesap Aç</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards Page -->
+        <div id="cardsPage" class="d-none">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i> Kartlarım</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="cardsContainer">
+                        <!-- Kartlar buraya dinamik olarak eklenecek -->
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-hl" id="addCardBtn"><i class="fas fa-plus me-1"></i> Yeni Kart Ekle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transfer Page -->
+        <div id="transferPage" class="d-none">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i> Para Transferi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form id="transferForm">
+                                <div class="mb-3">
+                                    <label for="fromAccount" class="form-label">Gönderen Hesap</label>
+                                    <select class="form-select" id="fromAccount" required>
+                                        <!-- Hesaplar buraya dinamik olarak eklenecek -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="toAccount" class="form-label">Alıcı Bilgileri</label>
+                                    <input type="text" class="form-control" id="toAccount" placeholder="IBAN veya Hesap No" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="transferAmount" class="form-label">Tutar</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="transferAmount" required>
+                                        <span class="input-group-text hl-currency">HL</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="transferDescription" class="form-label">Açıklama</label>
+                                    <input type="text" class="form-control" id="transferDescription" placeholder="Transfer açıklaması">
+                                </div>
+                                <button type="submit" class="btn btn-hl w-100"><i class="fas fa-paper-plane me-1"></i> Transfer Yap</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Son Transferler</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="transaction-list" id="transferHistory">
+                                        <!-- Transfer geçmişi buraya dinamik olarak eklenecek -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shop Page -->
+        <div id="shopPage" class="d-none">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i> HL Mağaza</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card product-card" data-product-id="1" data-product-price="100">
+                                <img src="https://via.placeholder.com/300x200?text=HLgame" class="card-img-top" alt="HLgame">
+                                <div class="card-body">
+                                    <h5 class="card-title">HLgame (1 tur)</h5>
+                                    <p class="card-text">Eğlenceli bir oyun deneyimi için 1 tur HLgame</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="hl-currency">100 HL</span>
+                                        <button class="btn btn-sm btn-hl buy-btn">Satın Al</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card product-card" data-product-id="2" data-product-price="10000">
+                                <img src="https://via.placeholder.com/300x200?text=Tezgah+Stars" class="card-img-top" alt="Tezgah Stars">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tezgah Stars Ön Bilet</h5>
+                                    <p class="card-text">Tezgah Stars etkinliğine ön bilet</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="hl-currency">10.000 HL</span>
+                                        <button class="btn btn-sm btn-hl buy-btn">Satın Al</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card product-card" data-product-id="3" data-product-price="15000">
+                                <img src="https://via.placeholder.com/300x200?text=Tezgah+Stars+Pro" class="card-img-top" alt="Tezgah Stars Pro">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tezgah Stars Ön Bilet Pro</h5>
+                                    <p class="card-text">Tezgah Stars etkinliğine VIP ön bilet</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="hl-currency">15.000 HL</span>
+                                        <button class="btn btn-sm btn-hl buy-btn">Satın Al</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card product-card" data-product-id="4" data-product-price="5000">
+                                <img src="https://via.placeholder.com/300x200?text=HL+Premium" class="card-img-top" alt="HL Premium">
+                                <div class="card-body">
+                                    <h5 class="card-title">HL Premium Üyelik</h5>
+                                    <p class="card-text">1 aylık premium üyelik ile avantajlardan yararlanın</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="hl-currency">5.000 HL</span>
+                                        <button class="btn btn-sm btn-hl buy-btn">Satın Al</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="adminPage" class="d-none">
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-user-shield me-2"></i> Admin Paneli</h5>
+                    <span class="admin-badge">YÖNETİCİ</span>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users-tab-pane" type="button" role="tab">Kullanıcılar</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="cards-tab" data-bs-toggle="tab" data-bs-target="#cards-tab-pane" type="button" role="tab">Tüm Kartlar</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" type="button" role="tab">Kart İstekleri</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions-tab-pane" type="button" role="tab">Tüm İşlemler</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="adminTabContent">
+                        <div class="tab-pane fade show active" id="users-tab-pane" role="tabpanel" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ad Soyad</th>
+                                            <th>E-posta</th>
+                                            <th>Hesap Sayısı</th>
+                                            <th>Toplam Bakiye</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminUsersTable">
+                                        <!-- Kullanıcılar buraya eklenecek -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="cards-tab-pane" role="tabpanel" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Kart No</th>
+                                            <th>Kart Sahibi</th>
+                                            <th>Son Kullanma</th>
+                                            <th>Bağlı Hesap</th>
+                                            <th>Kart Türü</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminCardsTable">
+                                        <!-- Tüm kartlar buraya eklenecek -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="requests-tab-pane" role="tabpanel" tabindex="0">
+                            <div id="cardRequestsContainer">
+                                <!-- Kart istekleri buraya eklenecek -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="transactions-tab-pane" role="tabpanel" tabindex="0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih</th>
+                                            <th>Açıklama</th>
+                                            <th>Tutar</th>
+                                            <th>Hesap</th>
+                                            <th>Kullanıcı</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminTransactionsTable">
+                                        <!-- Tüm işlemler buraya eklenecek -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profilePage" class="d-none">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i> Profilim</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Profil Fotoğrafı" width="150" height="150">
+                                <button class="btn btn-outline-primary btn-sm">Fotoğraf Yükle</button>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h6 class="card-title">Güvenlik Durumu</h6>
+                                    <div class="mb-2">
+                                        <span class="me-2"><i class="fas fa-check-circle text-success"></i> E-posta Doğrulandı</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="me-2"><i class="fas fa-check-circle text-success"></i> Şifre Güçlü</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="me-2"><i class="fas fa-times-circle text-danger"></i> 2 Adımlı Doğrulama</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-hl mt-2">Güvenliği Artır</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <form id="profileForm">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="profileFirstName" class="form-label">Ad</label>
+                                        <input type="text" class="form-control" id="profileFirstName" value="Ahmet">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="profileLastName" class="form-label">Soyad</label>
+                                        <input type="text" class="form-control" id="profileLastName" value="Yılmaz">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileEmail" class="form-label">E-posta</label>
+                                    <input type="email" class="form-control" id="profileEmail" value="ahmet.yilmaz@example.com" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profilePhone" class="form-label">Telefon</label>
+                                    <input type="tel" class="form-control" id="profilePhone" value="+90 555 123 45 67">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileAddress" class="form-label">Adres</label>
+                                    <textarea class="form-control" id="profileAddress" rows="3">İstanbul, Türkiye</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="profileBirthDate" class="form-label">Doğum Tarihi</label>
+                                    <input type="date" class="form-control" id="profileBirthDate" value="1990-01-01">
+                                </div>
+                                <button type="submit" class="btn btn-hl">Bilgileri Güncelle</button>
+                            </form>
+                            <hr>
+                            <h6 class="mb-3">Şifre Değiştir</h6>
+                            <form id="changePasswordForm">
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Mevcut Şifre</label>
+                                    <input type="password" class="form-control" id="currentPassword">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Yeni Şifre</label>
+                                    <input type="password" class="form-control" id="newPassword">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Yeni Şifre Tekrar</label>
+                                    <input type="password" class="form-control" id="confirmNewPassword">
+                                </div>
+                                <button type="submit" class="btn btn-hl">Şifreyi Değiştir</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-sign-in-alt me-2"></i> Giriş Yap</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginEmail" class="form-label">E-posta</label>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Şifre</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Beni hatırla</label>
+                            </div>
+                            <button type="submit" class="btn btn-hl w-100 mb-3">Giriş Yap</button>
+                            <div class="text-center mb-3">
+                                <a href="#" id="forgotPasswordLink">Şifremi Unuttum</a>
+                            </div>
+                            <div class="text-center">
+                                <p>Hesabınız yok mu? <a href="#" id="goToRegisterLink">Kayıt Olun</a></p>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3">
+                            <div class="biometric-login" id="fingerprintLogin" title="Parmak İzi ile Giriş">
+                                <i class="fas fa-fingerprint fa-lg"></i>
+                            </div>
+                            <small class="text-muted">Biyometrik giriş</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i> Kayıt Ol</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registerForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="registerFirstName" class="form-label">Ad</label>
+                                    <input type="text" class="form-control" id="registerFirstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="registerLastName" class="form-label">Soyad</label>
+                                    <input type="text" class="form-control" id="registerLastName" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerEmail" class="form-label">E-posta</label>
+                                <input type="email" class="form-control" id="registerEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerPassword" class="form-label">Şifre</label>
+                                <input type="password" class="form-control" id="registerPassword" required>
+                                <small class="text-muted">En az 8 karakter, bir büyük harf, bir küçük harf ve bir sayı içermelidir.</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerPasswordConfirm" class="form-label">Şifre Tekrar</label>
+                                <input type="password" class="form-control" id="registerPasswordConfirm" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="acceptTerms" required>
+                                <label class="form-check-label" for="acceptTerms"><a href="#">Kullanım Koşulları</a> ve <a href="#">Gizlilik Politikasını</a> kabul ediyorum.</label>
+                            </div>
+                            <button type="submit" class="btn btn-hl w-100">Kayıt Ol</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Card Modal -->
+        <div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-credit-card me-2"></i> Yeni Kart Ekle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addCardForm">
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Kart Numarası</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="cardExpiry" class="form-label">Son Kullanma Tarihi</label>
+                                    <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cardCvc" class="form-label">CVC</label>
+                                    <input type="text" class="form-control" id="cardCvc" placeholder="123" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardName" class="form-label">Kart Üzerindeki İsim</label>
+                                <input type="text" class="form-control" id="cardName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardAccount" class="form-label">Bağlı Hesap</label>
+                                <select class="form-select" id="cardAccount" required>
+                                    <!-- Hesaplar buraya dinamik olarak eklenecek -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-hl w-100">Kart İsteği Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Account Modal -->
+        <div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i> Yeni Hesap Aç</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addAccountForm">
+                            <div class="mb-3">
+                                <label for="accountType" class="form-label">Hesap Türü</label>
+                                <select class="form-select" id="accountType" required>
+                                    <option value="checking">Vadesiz TL Hesabı</option>
+                                    <option value="savings">Tasarruf Hesabı</option>
+                                    <option value="hl">HL Hesabı</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountName" class="form-label">Hesap Adı</label>
+                                <input type="text" class="form-control" id="accountName" placeholder="Ör: Birikim Hesabım" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="initialDeposit" class="form-label">Başlangıç Bakiyesi</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="initialDeposit" value="0" min="0">
+                                    <span class="input-group-text hl-currency">HL</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-hl w-100">Hesap Aç</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buy Product Modal -->
+        <div class="modal fade" id="buyProductModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalTitle"><i class="fas fa-shopping-cart me-2"></i> Satın Al</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <h6 id="productName"></h6>
+                            <div class="d-flex justify-content-between">
+                                <span>Fiyat:</span>
+                                <strong><span id="productPrice"></span> <span class="hl-currency">HL</span></strong>
+                            </div>
+                        </div>
+                        <form id="buyProductForm">
+                            <div class="mb-3">
+                                <label for="paymentAccount" class="form-label">Ödeme Yapılacak Hesap</label>
+                                <select class="form-select" id="paymentAccount" required>
+                                    <!-- Hesaplar buraya dinamik olarak eklenecek -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="paymentCard" class="form-label">Kart Seçin (Opsiyonel)</label>
+                                <select class="form-select" id="paymentCard">
+                                    <option value="">Kart Kullanma</option>
+                                    <!-- Kartlar buraya dinamik olarak eklenecek -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-hl w-100">Satın Alımı Onayla</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Card Request Modal -->
+        <div class="modal fade" id="editCardRequestModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-edit me-2"></i> Kart İsteğini Düzenle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editCardRequestForm">
+                            <input type="hidden" id="editRequestId">
+                            <div class="mb-3">
+                                <label for="editCardNumber" class="form-label">Kart Numarası</label>
+                                <input type="text" class="form-control" id="editCardNumber" required>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editCardExpiry" class="form-label">Son Kullanma Tarihi</label>
+                                    <input type="text" class="form-control" id="editCardExpiry" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editCardCvc" class="form-label">CVC</label>
+                                    <input type="text" class="form-control" id="editCardCvc" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCardName" class="form-label">Kart Üzerindeki İsim</label>
+                                <input type="text" class="form-control" id="editCardName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCardAccount" class="form-label">Bağlı Hesap</label>
+                                <select class="form-select" id="editCardAccount" required>
+                                    <!-- Hesaplar buraya dinamik olarak eklenecek -->
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-admin" id="approveCardRequestBtn">Onayla ve Ekle</button>
+                                <button type="button" class="btn btn-danger" id="rejectCardRequestBtn">Reddet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>HL Bank</h5>
+                    <p>Güvenli ve kolay bankacılık işlemleri için her zaman yanınızdayız.</p>
+                </div>
+                <div class="col-md-2">
+                    <h5>Hızlı Linkler</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Ana Sayfa</a></li>
+                        <li><a href="#" class="text-white">Hesaplar</a></li>
+                        <li><a href="#" class="text-white">Kartlar</a></li>
+                        <li><a href="#" class="text-white">Transfer</a></li>
+                        <li><a href="#" class="text-white">Mağaza</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Yardım</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Sık Sorulan Sorular</a></li>
+                        <li><a href="#" class="text-white">Canlı Destek</a></li>
+                        <li><a href="#" class="text-white">Şubelerimiz</a></li>
+                        <li><a href="#" class="text-white">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Bizi Takip Edin</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="mt-3">
+                        <img src="https://via.placeholder.com/100x40?text=SSL+Secure" alt="SSL Secure" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2023 HL Bank. Tüm hakları saklıdır.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white me-3">Gizlilik Politikası</a>
+                    <a href="#" class="text-white me-3">Kullanım Koşulları</a>
+                    <a href="#" class="text-white">Çerez Politikası</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Uygulama durumunu localStorage'dan yükle veya varsayılan değerleri ayarla
+        const loadState = () => {
+            const savedState = localStorage.getItem('hlbank_state');
+            if (savedState) {
+                return JSON.parse(savedState);
+            }
+            
+            return {
+                isLoggedIn: false,
+                currentUser: null,
+                accounts: [
+                    { id: 'acc123', name: 'Ana Hesap', type: 'checking', balance: 2500, iban: 'TR00 0000 0000 0000 0000 0001', userId: 1 },
+                    { id: 'acc456', name: 'Tasarruf Hesabı', type: 'savings', balance: 15000, iban: 'TR00 0000 0000 0000 0000 0002', userId: 1 },
+                    { id: 'acc789', name: 'HL Hesabı', type: 'hl', balance: 500, iban: 'TR00 0000 0000 0000 0000 0003', userId: 1 },
+                    { id: 'acc000', name: 'Admin Hesabı', type: 'checking', balance: 100000, iban: 'TR00 0000 0000 0000 0000 0000', userId: 2 }
+                ],
+                cards: [
+                    { id: 'card1', number: '1234********3456', expiry: '12/25', cvc: '123', name: 'AHMET YILMAZ', type: 'visa', accountId: 'acc123', userId: 1 },
+                    { id: 'card2', number: '5678********9012', expiry: '06/24', cvc: '456', name: 'AHMET YILMAZ', type: 'mastercard', accountId: 'acc456', userId: 1 },
+                    { id: 'card3', number: '9876********5432', expiry: '03/26', cvc: '789', name: 'ADMIN USER', type: 'visa', accountId: 'acc000', userId: 2 }
+                ],
+                transactions: [
+                    { id: 'txn1', date: '12.07.2023', description: 'HL Mağaza Alışveriş', amount: -150, accountId: 'acc789', userId: 1 },
+                    { id: 'txn2', date: '10.07.2023', description: 'Para Transferi (Ahmet Y.)', amount: 500, accountId: 'acc123', userId: 1 },
+                    { id: 'txn3', date: '05.07.2023', description: 'Maaş', amount: 7500, accountId: 'acc123', userId: 1 },
+                    { id: 'txn4', date: '01.07.2023', description: 'Kira Ödemesi', amount: -3000, accountId: 'acc123', userId: 1 },
+                    { id: 'txn5', date: '15.07.2023', description: 'Sistem Yönetimi', amount: 10000, accountId: 'acc000', userId: 2 }
+                ],
+                products: [
+                    { id: 1, name: "HLgame (1 tur)", price: 100, description: "Eğlenceli bir oyun deneyimi için 1 tur HLgame", image: "https://via.placeholder.com/300x200?text=HLgame" },
+                    { id: 2, name: "Tezgah Stars Ön Bilet", price: 10000, description: "Tezgah Stars etkinliğine ön bilet", image: "https://via.placeholder.com/300x200?text=Tezgah+Stars" },
+                    { id: 3, name: "Tezgah Stars Ön Bilet Pro", price: 15000, description: "Tezgah Stars etkinliğine VIP ön bilet", image: "https://via.placeholder.com/300x200?text=Tezgah+Stars+Pro" },
+                    { id: 4, name: "HL Premium Üyelik", price: 5000, description: "1 aylık premium üyelik ile avantajlardan yararlanın", image: "https://via.placeholder.com/300x200?text=HL+Premium" }
+                ],
+                registeredCards: [
+                    "1234567890123456",
+                    "9876543210987654",
+                    "4567890123456789"
+                ],
+                users: [
+                    { id: 1, firstName: "Demo", lastName: "Kullanıcı", email: "demo@hlbank.com", password: "demo123", isAdmin: false },
+                    { id: 2, firstName: "Admin", lastName: "User", email: "admin@hlbank.com", password: "HLKADM101514", isAdmin: true }
+                ],
+                cardRequests: [
+                    { id: 'req1', cardNumber: '1111222233334444', expiry: '12/25', cvc: '111', name: 'MEHMET KAYA', accountId: 'acc123', userId: 1, status: 'pending', date: '20.07.2023' }
+                ]
+            };
+        };
+
+        // Uygulama durumunu localStorage'a kaydet
+        const saveState = (state) => {
+            localStorage.setItem('hlbank_state', JSON.stringify(state));
+        };
+
+        // Başlangıç durumu
+        let state = loadState();
+
+        // DOM elemanları
+        const elements = {
+            loginBtn: document.getElementById('loginBtn'),
+            registerBtn: document.getElementById('registerBtn'),
+            logoutLink: document.getElementById('logoutLink'),
+            authButtons: document.getElementById('authButtons'),
+            userProfile: document.getElementById('userProfile'),
+            usernameDisplay: document.getElementById('usernameDisplay'),
+            adminBadge: document.getElementById('adminBadge'),
+            adminNavItem: document.getElementById('adminNavItem'),
+            adminLink: document.getElementById('adminLink'),
+            loginModal: new bootstrap.Modal(document.getElementById('loginModal')),
+            registerModal: new bootstrap.Modal(document.getElementById('registerModal')),
+            addCardModal: new bootstrap.Modal(document.getElementById('addCardModal')),
+            addAccountModal: new bootstrap.Modal(document.getElementById('addAccountModal')),
+            buyProductModal: new bootstrap.Modal(document.getElementById('buyProductModal')),
+            editCardRequestModal: new bootstrap.Modal(document.getElementById('editCardRequestModal')),
+            loginForm: document.getElementById('loginForm'),
+            registerForm: document.getElementById('registerForm'),
+            addCardForm: document.getElementById('addCardForm'),
+            addAccountForm: document.getElementById('addAccountForm'),
+            buyProductForm: document.getElementById('buyProductForm'),
+            editCardRequestForm: document.getElementById('editCardRequestForm'),
+            profileForm: document.getElementById('profileForm'),
+            changePasswordForm: document.getElementById('changePasswordForm'),
+            transferForm: document.getElementById('transferForm'),
+            homePage: document.getElementById('homePage'),
+            accountsPage: document.getElementById('accountsPage'),
+            cardsPage: document.getElementById('cardsPage'),
+            transferPage: document.getElementById('transferPage'),
+            shopPage: document.getElementById('shopPage'),
+            adminPage: document.getElementById('adminPage'),
+            profilePage: document.getElementById('profilePage'),
+            homeLink: document.getElementById('homeLink'),
+            accountsLink: document.getElementById('accountsLink'),
+            cardsLink: document.getElementById('cardsLink'),
+            transferLink: document.getElementById('transferLink'),
+            shopLink: document.getElementById('shopLink'),
+            adminLink: document.getElementById('adminLink'),
+            profileLink: document.getElementById('profileLink'),
+            settingsLink: document.getElementById('settingsLink'),
+            totalBalance: document.getElementById('totalBalance'),
+            creditCardsList: document.getElementById('creditCardsList'),
+            accountsTable: document.getElementById('accountsTable'),
+            cardsContainer: document.getElementById('cardsContainer'),
+            fromAccount: document.getElementById('fromAccount'),
+            toAccount: document.getElementById('toAccount'),
+            transferAmount: document.getElementById('transferAmount'),
+            transferDescription: document.getElementById('transferDescription'),
+            transferHistory: document.getElementById('transferHistory'),
+            cardAccount: document.getElementById('cardAccount'),
+            paymentAccount: document.getElementById('paymentAccount'),
+            paymentCard: document.getElementById('paymentCard'),
+            editCardAccount: document.getElementById('editCardAccount'),
+            editRequestId: document.getElementById('editRequestId'),
+            editCardNumber: document.getElementById('editCardNumber'),
+            editCardExpiry: document.getElementById('editCardExpiry'),
+            editCardCvc: document.getElementById('editCardCvc'),
+            editCardName: document.getElementById('editCardName'),
+            approveCardRequestBtn: document.getElementById('approveCardRequestBtn'),
+            rejectCardRequestBtn: document.getElementById('rejectCardRequestBtn'),
+            productModalTitle: document.getElementById('productModalTitle'),
+            productName: document.getElementById('productName'),
+            productPrice: document.getElementById('productPrice'),
+            recentTransactions: document.getElementById('recentTransactions'),
+            adminUsersTable: document.getElementById('adminUsersTable'),
+            adminCardsTable: document.getElementById('adminCardsTable'),
+            adminTransactionsTable: document.getElementById('adminTransactionsTable'),
+            cardRequestsContainer: document.getElementById('cardRequestsContainer'),
+            successToast: new bootstrap.Toast(document.getElementById('successToast')),
+            errorToast: new bootstrap.Toast(document.getElementById('errorToast')),
+            successMessage: document.getElementById('successMessage'),
+            errorMessage: document.getElementById('errorMessage'),
+            quickTransferBtn: document.getElementById('quickTransferBtn'),
+            quickPayBtn: document.getElementById('quickPayBtn'),
+            quickShopBtn: document.getElementById('quickShopBtn'),
+            quickSupportBtn: document.getElementById('quickSupportBtn'),
+            addNewCardBtn: document.getElementById('addNewCardBtn'),
+            addCardBtn: document.getElementById('addCardBtn'),
+            addNewAccountBtn: document.getElementById('addNewAccountBtn'),
+            forgotPasswordLink: document.getElementById('forgotPasswordLink'),
+            goToRegisterLink: document.getElementById('goToRegisterLink'),
+            fingerprintLogin: document.getElementById('fingerprintLogin')
+        };
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener'ları ekle
+            setupEventListeners();
+            
+            // Kullanıcı giriş durumunu kontrol et
+            checkAuthState();
+        });
+
+        // Event listener'ları ayarla
+        function setupEventListeners() {
+            // Giriş/çıkış işlemleri
+            elements.loginBtn.addEventListener('click', function() { elements.loginModal.show(); });
+            elements.registerBtn.addEventListener('click', function() { elements.registerModal.show(); });
+            elements.logoutLink.addEventListener('click', logout);
+            elements.forgotPasswordLink.addEventListener('click', showForgotPassword);
+            elements.goToRegisterLink.addEventListener('click', function() {
+                elements.loginModal.hide();
+                elements.registerModal.show();
+            });
+
+            // Navigasyon linkleri
+            elements.homeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('home');
+            });
+            elements.accountsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('accounts');
+            });
+            elements.cardsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('cards');
+            });
+            elements.transferLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('transfer');
+            });
+            elements.shopLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('shop');
+            });
+            elements.adminLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('admin');
+            });
+            elements.profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('profile');
+            });
+            elements.settingsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSettings();
+            });
+
+            // Hızlı işlem butonları
+            elements.quickTransferBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('transfer');
+            });
+            elements.quickShopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('shop');
+            });
+
+            // Kart ekleme butonları
+            elements.addNewCardBtn.addEventListener('click', function() { elements.addCardModal.show(); });
+            elements.addCardBtn.addEventListener('click', function() { elements.addCardModal.show(); });
+
+            // Hesap ekleme butonu
+            elements.addNewAccountBtn.addEventListener('click', function() { elements.addAccountModal.show(); });
+
+            // Biyometrik giriş
+            elements.fingerprintLogin.addEventListener('click', biometricLogin);
+
+            // Form submit işlemleri
+            elements.loginForm.addEventListener('submit', handleLogin);
+            elements.registerForm.addEventListener('submit', handleRegister);
+            elements.addCardForm.addEventListener('submit', handleAddCardRequest);
+            elements.addAccountForm.addEventListener('submit', handleAddAccount);
+            elements.buyProductForm.addEventListener('submit', handleBuyProduct);
+            elements.profileForm.addEventListener('submit', handleProfileUpdate);
+            elements.changePasswordForm.addEventListener('submit', handleChangePassword);
+            elements.transferForm.addEventListener('submit', handleTransfer);
+            elements.approveCardRequestBtn.addEventListener('click', handleApproveCardRequest);
+            elements.rejectCardRequestBtn.addEventListener('click', handleRejectCardRequest);
+
+            // Mağaza ürün tıklamaları
+            document.querySelectorAll('.product-card').forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('buy-btn')) {
+                        const productId = parseInt(this.getAttribute('data-product-id'));
+                        const product = state.products.find(function(p) { return p.id === productId; });
+                        if (product) {
+                            showBuyProductModal(product);
+                        }
+                    }
+                });
+            });
+
+            // Satın al butonları
+            document.querySelectorAll('.buy-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const productCard = this.closest('.product-card');
+                    const productId = parseInt(productCard.getAttribute('data-product-id'));
+                    const product = state.products.find(function(p) { return p.id === productId; });
+                    if (product) {
+                        showBuyProductModal(product);
+                    }
+                });
+            });
+        }
+
+        // Kullanıcı giriş durumunu kontrol et
+        function checkAuthState() {
+            if (state.isLoggedIn) {
+                showAuthenticatedUI();
+            } else {
+                showUnauthenticatedUI();
+            }
+        }
+
+        // Giriş yapılmış arayüzü göster
+        function showAuthenticatedUI() {
+            elements.authButtons.classList.add('d-none');
+            elements.userProfile.classList.remove('d-none');
+            
+            // Admin kontrolü
+            if (state.currentUser && state.currentUser.isAdmin) {
+                elements.adminNavItem.classList.remove('d-none');
+                elements.adminBadge.classList.remove('d-none');
+            } else {
+                elements.adminNavItem.classList.add('d-none');
+                elements.adminBadge.classList.add('d-none');
+            }
+            
+            updateUserData();
+            updateAccounts();
+            updateCards();
+            updateTransactions();
+            showPage('home');
+        }
+
+        // Giriş yapılmamış arayüzü göster
+        function showUnauthenticatedUI() {
+            elements.authButtons.classList.remove('d-none');
+            elements.userProfile.classList.add('d-none');
+            showPage('home');
+        }
+
+        // Kullanıcı verilerini güncelle
+        function updateUserData() {
+            if (state.currentUser) {
+                elements.usernameDisplay.textContent = state.currentUser.firstName;
+                
+                // Admin panelini güncelle
+                if (state.currentUser.isAdmin) {
+                    updateAdminPanel();
+                }
+            }
+        }
+
+        // Hesapları güncelle
+        function updateAccounts() {
+            // Kullanıcının hesaplarını filtrele
+            const userAccounts = state.accounts.filter(function(account) {
+                return account.userId === state.currentUser.id;
+            });
+            
+            // Toplam bakiye hesapla
+            const totalBalance = userAccounts.reduce(function(sum, account) { return sum + account.balance; }, 0);
+            elements.totalBalance.textContent = totalBalance.toLocaleString();
+
+            // Hesap listesini güncelle
+            elements.accountsTable.innerHTML = '';
+            userAccounts.forEach(function(account) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${account.id}</td>
+                    <td>${account.name} <span class="badge bg-secondary">${getAccountTypeName(account.type)}</span></td>
+                    <td>${account.balance.toLocaleString()} <span class="hl-currency">HL</span></td>
+                    <td>${account.iban}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1">Detay</button>
+                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                    </td>
+                `;
+                elements.accountsTable.appendChild(row);
+            });
+
+            // Select elemanlarını güncelle
+            updateAccountSelects();
+        }
+
+        // Hesap türü adını al
+        function getAccountTypeName(type) {
+            switch (type) {
+                case 'checking': return 'Vadesiz';
+                case 'savings': return 'Tasarruf';
+                case 'hl': return 'HL Hesabı';
+                default: return type;
+            }
+        }
+
+        // Kartları güncelle
+        function updateCards() {
+            // Kullanıcının kartlarını filtrele
+            const userCards = state.cards.filter(function(card) {
+                return card.userId === state.currentUser.id;
+            });
+            
+            // Kart carousel'ını güncelle
+            elements.creditCardsList.innerHTML = '';
+            userCards.forEach(function(card, index) {
+                const item = document.createElement('div');
+                item.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="credit-card">
+                        <div class="card-type">
+                            <i class="fab fa-${card.type} fa-2x"></i>
+                        </div>
+                        <div class="card-number">${card.number}</div>
+                        <div class="card-details">
+                            <div>
+                                <div class="small">KART SAHİBİ</div>
+                                <div>${card.name}</div>
+                            </div>
+                            <div>
+                                <div class="small">SON KULLANMA</div>
+                                <div>${card.expiry}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                elements.creditCardsList.appendChild(item);
+            });
+
+            // Kart grid'ini güncelle
+            elements.cardsContainer.innerHTML = '';
+            userCards.forEach(function(card) {
+                const col = document.createElement('div');
+                col.className = 'col-md-6';
+                col.innerHTML = `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">${getAccountName(card.accountId)}</h6>
+                                <i class="fab fa-${card.type}"></i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div>
+                                    <small class="text-muted">KART NUMARASI</small>
+                                    <div>${card.number}</div>
+                                </div>
+                                <div>
+                                    <small class="text-muted">CVC</small>
+                                    <div>${card.cvc}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">SON KULLANMA</small>
+                                    <div>${card.expiry}</div>
+                                </div>
+                                <div>
+                                    <small class="text-muted">KART SAHİBİ</small>
+                                    <div>${card.name}</div>
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button class="btn btn-sm btn-outline-danger">Kartı Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                elements.cardsContainer.appendChild(col);
+            });
+
+            // Kart select'ini güncelle
+            updateCardSelect();
+        }
+
+        // Hesap adını al
+        function getAccountName(accountId) {
+            const account = state.accounts.find(function(a) { return a.id === accountId; });
+            return account ? account.name : 'Bilinmeyen Hesap';
+        }
+
+        // Kullanıcı adını al
+        function getUserName(userId) {
+            const user = state.users.find(function(u) { return u.id === userId; });
+            return user ? `${user.firstName} ${user.lastName}` : 'Bilinmeyen Kullanıcı';
+        }
+
+        // İşlemleri güncelle
+        function updateTransactions() {
+            // Kullanıcının işlemlerini filtrele
+            const userTransactions = state.transactions.filter(function(transaction) {
+                const account = state.accounts.find(function(a) { return a.id === transaction.accountId; });
+                return account && account.userId === state.currentUser.id;
+            });
+            
+            elements.recentTransactions.innerHTML = '';
+            userTransactions.slice(0, 5).forEach(function(transaction) {
+                const item = document.createElement('div');
+                item.className = `transaction-item ${transaction.amount < 0 ? 'debit' : ''}`;
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>${transaction.description}</strong>
+                            <div class="text-muted small">${transaction.date}</div>
+                        </div>
+                        <div class="${transaction.amount < 0 ? 'text-danger' : 'text-success'}">
+                            ${transaction.amount < 0 ? '' : '+'}${transaction.amount} <span class="hl-currency">HL</span>
+                        </div>
+                    </div>
+                `;
+                elements.recentTransactions.appendChild(item);
+            });
+
+            // Transfer geçmişini güncelle
+            elements.transferHistory.innerHTML = '';
+            userTransactions
+                .filter(function(t) { return t.description.includes('Transfer'); })
+                .slice(0, 5)
+                .forEach(function(transaction) {
+                    const item = document.createElement('div');
+                    item.className = `transaction-item ${transaction.amount < 0 ? 'debit' : ''}`;
+                    item.innerHTML = `
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>${transaction.description}</strong>
+                                <div class="text-muted small">${transaction.date}</div>
+                            </div>
+                            <div class="${transaction.amount < 0 ? 'text-danger' : 'text-success'}">
+                                ${transaction.amount < 0 ? '' : '+'}${transaction.amount} <span class="hl-currency">HL</span>
+                            </div>
+                        </div>
+                    `;
+                    elements.transferHistory.appendChild(item);
+                });
+        }
+
+        // Admin panelini güncelle
+        function updateAdminPanel() {
+            // Kullanıcıları güncelle
+            elements.adminUsersTable.innerHTML = '';
+            state.users.forEach(function(user) {
+                const userAccounts = state.accounts.filter(function(account) {
+                    return account.userId === user.id;
+                });
+                const totalBalance = userAccounts.reduce(function(sum, account) {
+                    return sum + account.balance;
+                }, 0);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName} ${user.lastName} ${user.isAdmin ? '<span class="admin-badge ms-2">ADMIN</span>' : ''}</td>
+                    <td>${user.email}</td>
+                    <td>${userAccounts.length}</td>
+                    <td>${totalBalance.toLocaleString()} <span class="hl-currency">HL</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1">Detay</button>
+                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                    </td>
+                `;
+                elements.adminUsersTable.appendChild(row);
+            });
+            
+            // Tüm kartları güncelle
+            elements.adminCardsTable.innerHTML = '';
+            state.cards.forEach(function(card) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.number}</td>
+                    <td>${card.name}</td>
+                    <td>${card.expiry}</td>
+                    <td>${getAccountName(card.accountId)}</td>
+                    <td>${card.type.toUpperCase()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1">Detay</button>
+                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                    </td>
+                `;
+                elements.adminCardsTable.appendChild(row);
+            });
+            
+            // Kart isteklerini güncelle
+            elements.cardRequestsContainer.innerHTML = '';
+            state.cardRequests.forEach(function(request) {
+                if (request.status === 'pending') {
+                    const cardRequestElement = document.createElement('div');
+                    cardRequestElement.className = 'card-request';
+                    cardRequestElement.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">Kart İsteği #${request.id}</h6>
+                            <span class="badge pending-badge">BEKLEMEDE</span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">Kart Sahibi:</small>
+                                    <div>${request.name}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Kart Numarası:</small>
+                                    <div>${request.cardNumber.substring(0, 4)} **** **** ${request.cardNumber.substring(12)}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">Son Kullanma:</small>
+                                    <div>${request.expiry}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Bağlı Hesap:</small>
+                                    <div>${getAccountName(request.accountId)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">İstek Tarihi: ${request.date}</small>
+                            <button class="btn btn-sm btn-admin edit-card-request" data-request-id="${request.id}">
+                                <i class="fas fa-edit me-1"></i> Düzenle ve Onayla
+                            </button>
+                        </div>
+                    `;
+                    elements.cardRequestsContainer.appendChild(cardRequestElement);
+                }
+            });
+            
+            // Kart isteği düzenleme butonlarını ekle
+            document.querySelectorAll('.edit-card-request').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    const request = state.cardRequests.find(function(req) { return req.id === requestId; });
+                    if (request) {
+                        showEditCardRequestModal(request);
+                    }
+                });
+            });
+            
+            // Tüm işlemleri güncelle
+            elements.adminTransactionsTable.innerHTML = '';
+            state.transactions.forEach(function(transaction) {
+                const account = state.accounts.find(function(a) { return a.id === transaction.accountId; });
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${transaction.description}</td>
+                    <td class="${transaction.amount < 0 ? 'text-danger' : 'text-success'}">
+                        ${transaction.amount < 0 ? '' : '+'}${transaction.amount} <span class="hl-currency">HL</span>
+                    </td>
+                    <td>${account ? account.name : 'Bilinmeyen Hesap'}</td>
+                    <td>${getUserName(account ? account.userId : null)}</td>
+                `;
+                elements.adminTransactionsTable.appendChild(row);
+            });
+        }
+
+        // Hesap select'lerini güncelle
+        function updateAccountSelects() {
+            // Kullanıcının hesaplarını filtrele
+            const userAccounts = state.accounts.filter(function(account) {
+                return account.userId === state.currentUser.id;
+            });
+            
+            const selects = [
+                elements.fromAccount,
+                elements.cardAccount,
+                elements.paymentAccount,
+                elements.editCardAccount
+            ];
+
+            selects.forEach(function(select) {
+                if (select) {
+                    select.innerHTML = '';
+                    userAccounts.forEach(function(account) {
+                        const option = document.createElement('option');
+                        option.value = account.id;
+                        option.textContent = `${account.name} (${account.balance.toLocaleString()} HL)`;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // Kart select'ini güncelle
+        function updateCardSelect() {
+            // Kullanıcının kartlarını filtrele
+            const userCards = state.cards.filter(function(card) {
+                return card.userId === state.currentUser.id;
+            });
+            
+            elements.paymentCard.innerHTML = '<option value="">Kart Kullanma</option>';
+            userCards.forEach(function(card) {
+                const option = document.createElement('option');
+                option.value = card.id;
+                option.textContent = `${card.type.toUpperCase()} ${card.number}`;
+                elements.paymentCard.appendChild(option);
+            });
+        }
+
+        // Sayfa göster
+        function showPage(page) {
+            // Tüm sayfaları gizle
+            elements.homePage.classList.add('d-none');
+            elements.accountsPage.classList.add('d-none');
+            elements.cardsPage.classList.add('d-none');
+            elements.transferPage.classList.add('d-none');
+            elements.shopPage.classList.add('d-none');
+            elements.profilePage.classList.add('d-none');
+            elements.adminPage.classList.add('d-none');
+
+            // Aktif navigasyon linklerini güncelle
+            document.querySelectorAll('.nav-link').forEach(function(link) {
+                link.classList.remove('active');
+            });
+
+            // İstenen sayfayı göster
+            switch (page) {
+                case 'home':
+                    elements.homePage.classList.remove('d-none');
+                    elements.homeLink.classList.add('active');
+                    break;
+                case 'accounts':
+                    if (state.isLoggedIn) {
+                        elements.accountsPage.classList.remove('d-none');
+                        elements.accountsLink.classList.add('active');
+                    } else {
+                        elements.loginModal.show();
+                    }
+                    break;
+                case 'cards':
+                    if (state.isLoggedIn) {
+                        elements.cardsPage.classList.remove('d-none');
+                        elements.cardsLink.classList.add('active');
+                    } else {
+                        elements.loginModal.show();
+                    }
+                    break;
+                case 'transfer':
+                    if (state.isLoggedIn) {
+                        elements.transferPage.classList.remove('d-none');
+                        elements.transferLink.classList.add('active');
+                    } else {
+                        elements.loginModal.show();
+                    }
+                    break;
+                case 'shop':
+                    elements.shopPage.classList.remove('d-none');
+                    elements.shopLink.classList.add('active');
+                    break;
+                case 'admin':
+                    if (state.isLoggedIn && state.currentUser.isAdmin) {
+                        elements.adminPage.classList.remove('d-none');
+                        elements.adminLink.classList.add('active');
+                        updateAdminPanel();
+                    } else {
+                        showPage('home');
+                    }
+                    break;
+                case 'profile':
+                    if (state.isLoggedIn) {
+                        elements.profilePage.classList.remove('d-none');
+                        elements.profileLink.classList.add('active');
+                    } else {
+                        elements.loginModal.show();
+                    }
+                    break;
+            }
+        }
+
+        // Ayarlar sayfasını göster
+        function showSettings() {
+            Swal.fire({
+                title: 'Ayarlar',
+                html: `
+                    <div class="text-start">
+                        <div class="mb-3">
+                            <label class="form-label">Tema</label>
+                            <select class="form-select" id="themeSelect">
+                                <option value="light">Açık Tema</option>
+                                <option value="dark">Koyu Tema</option>
+                                <option value="system">Sistem Ayarları</option>
+                            </select>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="notificationsSwitch">
+                            <label class="form-check-label" for="notificationsSwitch">Bildirimleri Aç</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="biometricSwitch">
+                            <label class="form-check-label" for="biometricSwitch">Biyometrik Giriş</label>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Kaydet',
+                cancelButtonText: 'İptal',
+                customClass: {
+                    confirmButton: 'btn btn-hl',
+                    cancelButton: 'btn btn-outline-secondary'
+                }
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    showSuccess('Ayarlar başarıyla kaydedildi.');
+                }
+            });
+        }
+
+        // Ürün satın alma modal'ını göster
+        function showBuyProductModal(product) {
+            if (!state.isLoggedIn) {
+                elements.loginModal.show();
+                return;
+            }
+
+            elements.productModalTitle.innerHTML = `<i class="fas fa-shopping-cart me-2"></i> ${product.name} Satın Al`;
+            elements.productName.textContent = product.name;
+            elements.productPrice.textContent = product.price.toLocaleString();
+            
+            // Formdaki hidden alanları güncelle
+            elements.buyProductForm.dataset.productId = product.id;
+            elements.buyProductForm.dataset.productPrice = product.price;
+            
+            elements.buyProductModal.show();
+        }
+
+        // Kart isteği düzenleme modal'ını göster
+        function showEditCardRequestModal(request) {
+            elements.editRequestId.value = request.id;
+            elements.editCardNumber.value = request.cardNumber;
+            elements.editCardExpiry.value = request.expiry;
+            elements.editCardCvc.value = request.cvc;
+            elements.editCardName.value = request.name;
+            
+            // Hesap select'ini güncelle
+            const accountSelect = elements.editCardAccount;
+            accountSelect.innerHTML = '';
+            state.accounts.forEach(function(account) {
+                const option = document.createElement('option');
+                option.value = account.id;
+                option.textContent = `${account.name} (${account.balance.toLocaleString()} HL)`;
+                option.selected = account.id === request.accountId;
+                accountSelect.appendChild(option);
+            });
+            
+            elements.editCardRequestModal.show();
+        }
+
+        // Şifremi unuttum
+        function showForgotPassword() {
+            Swal.fire({
+                title: 'Şifremi Unuttum',
+                html: `
+                    <div class="text-start">
+                        <p>Şifrenizi sıfırlamak için kayıtlı e-posta adresinizi girin.</p>
+                        <div class="mb-3">
+                            <label for="forgotEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="forgotEmail" required>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Gönder',
+                cancelButtonText: 'İptal',
+                customClass: {
+                    confirmButton: 'btn btn-hl',
+                    cancelButton: 'btn btn-outline-secondary'
+                },
+                preConfirm: function() {
+                    const email = document.getElementById('forgotEmail').value;
+                    if (!email) {
+                        Swal.showValidationMessage('E-posta adresi gereklidir');
+                    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+                        Swal.showValidationMessage('Geçerli bir e-posta adresi girin');
+                    }
+                    return { email: email };
+                }
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Başarılı!',
+                        text: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.',
+                        icon: 'success',
+                        confirmButtonText: 'Tamam',
+                        customClass: {
+                            confirmButton: 'btn btn-hl'
+                        }
+                    });
+                }
+            });
+        }
+
+        // Biyometrik giriş
+        function biometricLogin() {
+            Swal.fire({
+                title: 'Biyometrik Giriş',
+                html: `
+                    <div class="text-center">
+                        <div class="biometric-login mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-fingerprint fa-2x"></i>
+                        </div>
+                        <p>Parmak izi tarayıcınıza yerleştirin</p>
+                    </div>
+                `,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: function() {
+                    // Simüle edilmiş biyometrik giriş
+                    setTimeout(function() {
+                        Swal.close();
+                        handleLoginSuccess({
+                            firstName: 'Ahmet',
+                            lastName: 'Yılmaz',
+                            email: 'ahmet.yilmaz@example.com',
+                            id: 1,
+                            isAdmin: false
+                        });
+                    }, 2000);
+                }
+            });
+        }
+
+        // Giriş işlemi
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = elements.loginEmail.value;
+            const password = elements.loginPassword.value;
+            
+            // Basit validasyon
+            if (!email || !password) {
+                showError('Lütfen e-posta ve şifrenizi girin.');
+                return;
+            }
+            
+            // Kullanıcıyı bul
+            const user = state.users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                elements.loginModal.hide();
+                handleLoginSuccess(user);
+            } else {
+                showError('Geçersiz e-posta veya şifre');
+            }
+        }
+
+        // Başarılı giriş
+        function handleLoginSuccess(user) {
+            state.isLoggedIn = true;
+            state.currentUser = user;
+            saveState(state);
+            showAuthenticatedUI();
+            showSuccess('Başarıyla giriş yaptınız.');
+        }
+
+        // Kayıt işlemi
+        function handleRegister(e) {
+            e.preventDefault();
+            
+            const firstName = elements.registerFirstName.value;
+            const lastName = elements.registerLastName.value;
+            const email = elements.registerEmail.value;
+            const password = elements.registerPassword.value;
+            const passwordConfirm = elements.registerPasswordConfirm.value;
+            
+            // Validasyon
+            if (!firstName || !lastName || !email || !password || !passwordConfirm) {
+                showError('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                showError('Şifreler eşleşmiyor.');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showError('Şifre en az 8 karakter olmalıdır.');
+                return;
+            }
+            
+            // E-posta kontrolü
+            if (state.users.some(u => u.email === email)) {
+                showError('Bu e-posta adresi zaten kayıtlı.');
+                return;
+            }
+            
+            // Admin kontrolü
+            const isAdmin = password === 'HLKADM101514';
+            
+            // Yeni kullanıcı oluştur
+            const newUser = {
+                id: state.users.length + 1,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password,
+                isAdmin: isAdmin
+            };
+            
+            // Kullanıcıyı ekle
+            state.users.push(newUser);
+            
+            // Hoş geldin bonusu ekle
+            state.accounts.push({
+                id: 'acc' + Math.floor(1000 + Math.random() * 9000),
+                name: 'Ana Hesap',
+                type: 'checking',
+                balance: isAdmin ? 100000 : 500, // Adminlere daha fazla bakiye
+                iban: generateIBAN(),
+                userId: newUser.id
+            });
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Modal'ı kapat ve giriş yap
+            elements.registerModal.hide();
+            handleLoginSuccess(newUser);
+            showSuccess(`Kayıt işlemi başarılı. Hoş geldiniz${isAdmin ? ' yönetici' : ''}!`);
+        }
+
+        // Kart isteği gönderme işlemi
+        function handleAddCardRequest(e) {
+            e.preventDefault();
+            
+            const cardNumber = elements.cardNumber.value.replace(/\s/g, '');
+            const cardExpiry = elements.cardExpiry.value;
+            const cardCvc = elements.cardCvc.value;
+            const cardName = elements.cardName.value;
+            const cardAccount = elements.cardAccount.value;
+            
+            // Validasyon
+            if (!cardNumber || !cardExpiry || !cardCvc || !cardName || !cardAccount) {
+                showError('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                showError('Geçerli bir kart numarası girin (16 haneli).');
+                return;
+            }
+            
+            if (state.registeredCards.includes(cardNumber)) {
+                showError('Bu kart başka bir hesaba kayıtlı.');
+                return;
+            }
+            
+            // Kart isteği oluştur
+            const newRequest = {
+                id: 'req' + (state.cardRequests.length + 1),
+                cardNumber: cardNumber,
+                expiry: cardExpiry,
+                cvc: cardCvc,
+                name: cardName.toUpperCase(),
+                accountId: cardAccount,
+                userId: state.currentUser.id,
+                status: 'pending',
+                date: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            // İsteği ekle
+            state.cardRequests.push(newRequest);
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Modal'ı kapat ve başarı mesajı göster
+            elements.addCardModal.hide();
+            showSuccess('Kart isteğiniz admin onayına gönderildi.');
+            
+            // Admin ise hemen göster
+            if (state.currentUser.isAdmin) {
+                updateAdminPanel();
+            }
+        }
+
+        // Kart isteğini onayla
+        function handleApproveCardRequest() {
+            const requestId = elements.editRequestId.value;
+            const request = state.cardRequests.find(function(req) { return req.id === requestId; });
+            
+            if (request) {
+                // Kart tipini belirle
+                let cardType = 'credit';
+                if (request.cardNumber.startsWith('4')) {
+                    cardType = 'visa';
+                } else if (request.cardNumber.startsWith('5')) {
+                    cardType = 'mastercard';
+                }
+                
+                // Yeni kart oluştur
+                const newCard = {
+                    id: 'card' + (state.cards.length + 1),
+                    number: request.cardNumber.substring(0, 4) + '********' + request.cardNumber.substring(12),
+                    expiry: request.expiry,
+                    cvc: request.cvc,
+                    name: request.name,
+                    type: cardType,
+                    accountId: request.accountId,
+                    userId: request.userId
+                };
+                
+                // Kartı ekle
+                state.cards.push(newCard);
+                state.registeredCards.push(request.cardNumber);
+                
+                // İsteği güncelle
+                request.status = 'approved';
+                
+                // Durumu kaydet
+                saveState(state);
+                
+                // Modal'ı kapat ve başarı mesajı göster
+                elements.editCardRequestModal.hide();
+                showSuccess('Kart başarıyla eklendi ve kullanıcıya tanımlandı.');
+                
+                // Admin panelini güncelle
+                updateAdminPanel();
+            }
+        }
+
+        // Kart isteğini reddet
+        function handleRejectCardRequest() {
+            const requestId = elements.editRequestId.value;
+            const request = state.cardRequests.find(function(req) { return req.id === requestId; });
+            
+            if (request) {
+                // İsteği güncelle
+                request.status = 'rejected';
+                
+                // Durumu kaydet
+                saveState(state);
+                
+                // Modal'ı kapat ve bilgi mesajı göster
+                elements.editCardRequestModal.hide();
+                showSuccess('Kart isteği reddedildi.');
+                
+                // Admin panelini güncelle
+                updateAdminPanel();
+            }
+        }
+
+        // Hesap ekleme işlemi
+        function handleAddAccount(e) {
+            e.preventDefault();
+            
+            const accountType = elements.accountType.value;
+            const accountName = elements.accountName.value;
+            const initialDeposit = parseFloat(elements.initialDeposit.value) || 0;
+            
+            // Validasyon
+            if (!accountName) {
+                showError('Lütfen hesap adı girin.');
+                return;
+            }
+            
+            if (initialDeposit < 0) {
+                showError('Başlangıç bakiyesi negatif olamaz.');
+                return;
+            }
+            
+            // Yeni hesap oluştur
+            const newAccount = {
+                id: 'acc' + Math.floor(1000 + Math.random() * 9000),
+                name: accountName,
+                type: accountType,
+                balance: initialDeposit,
+                iban: generateIBAN(),
+                userId: state.currentUser.id
+            };
+            
+            // Hesabı ekle
+            state.accounts.push(newAccount);
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Modal'ı kapat ve başarı mesajı göster
+            elements.addAccountModal.hide();
+            showSuccess('Hesap başarıyla açıldı.');
+            
+            // Hesapları güncelle
+            updateAccounts();
+        }
+
+        // IBAN oluştur
+        function generateIBAN() {
+            let iban = 'TR';
+            for (let i = 0; i < 20; i++) {
+                iban += Math.floor(Math.random() * 10);
+                if (i % 4 === 3 && i !== 19) {
+                    iban += ' ';
+                }
+            }
+            return iban;
+        }
+
+        // Ürün satın alma işlemi
+        function handleBuyProduct(e) {
+            e.preventDefault();
+            
+            const productId = parseInt(elements.buyProductForm.dataset.productId);
+            const productPrice = parseFloat(elements.buyProductForm.dataset.productPrice);
+            const paymentAccount = elements.paymentAccount.value;
+            const paymentCard = elements.paymentCard.value;
+            
+            // Validasyon
+            if (!paymentAccount) {
+                showError('Lütfen ödeme yapılacak hesabı seçin.');
+                return;
+            }
+            
+            // Hesabı bul
+            const account = state.accounts.find(function(a) { return a.id === paymentAccount; });
+            if (!account) {
+                showError('Hesap bulunamadı.');
+                return;
+            }
+            
+            // Bakiye kontrolü
+            if (account.balance < productPrice) {
+                showError('Yetersiz bakiye. Lütfen bakiyenizi kontrol edin.');
+                return;
+            }
+            
+            // Ödeme yap
+            account.balance -= productPrice;
+            
+            // İşlem geçmişine ekle
+            const product = state.products.find(function(p) { return p.id === productId; });
+            const newTransaction = {
+                id: 'txn' + (state.transactions.length + 1),
+                date: new Date().toLocaleDateString('tr-TR'),
+                description: `HL Mağaza - ${product.name}`,
+                amount: -productPrice,
+                accountId: paymentAccount,
+                userId: state.currentUser.id
+            };
+            state.transactions.unshift(newTransaction);
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Modal'ı kapat ve başarı mesajı göster
+            elements.buyProductModal.hide();
+            showSuccess(`${product.name} başarıyla satın alındı.`);
+            
+            // Verileri güncelle
+            updateAccounts();
+            updateTransactions();
+            
+            // Admin ise admin panelini de güncelle
+            if (state.currentUser.isAdmin) {
+                updateAdminPanel();
+            }
+        }
+
+        // Transfer işlemi
+        function handleTransfer(e) {
+            e.preventDefault();
+            
+            const fromAccount = elements.fromAccount.value;
+            const toAccount = elements.toAccount.value;
+            const amount = parseFloat(elements.transferAmount.value);
+            const description = elements.transferDescription.value;
+            
+            // Validasyon
+            if (!fromAccount || !toAccount || !amount) {
+                showError('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            if (amount <= 0) {
+                showError('Transfer tutarı pozitif bir değer olmalıdır.');
+                return;
+            }
+            
+            // Gönderen hesabı bul
+            const senderAccount = state.accounts.find(function(a) { return a.id === fromAccount; });
+            if (!senderAccount) {
+                showError('Gönderen hesap bulunamadı.');
+                return;
+            }
+            
+            // Bakiye kontrolü
+            if (senderAccount.balance < amount) {
+                showError('Yetersiz bakiye. Lütfen bakiyenizi kontrol edin.');
+                return;
+            }
+            
+            // Transferi gerçekleştir
+            senderAccount.balance -= amount;
+            
+            // Alıcı hesabı bul (gerçek uygulamada API çağrısı yapılacak)
+            // Bu örnekte alıcı hesabı aynı kullanıcının başka bir hesabı olarak varsayıyoruz
+            const receiverAccount = state.accounts.find(function(a) { return a.id === toAccount; }) || { balance: 0 };
+            receiverAccount.balance += amount;
+            
+            // İşlem geçmişine ekle
+            const newTransaction = {
+                id: 'txn' + (state.transactions.length + 1),
+                date: new Date().toLocaleDateString('tr-TR'),
+                description: description || `Para Transferi (${receiverAccount.name || 'Bilinmeyen Hesap'})`,
+                amount: -amount,
+                accountId: fromAccount,
+                userId: state.currentUser.id
+            };
+            state.transactions.unshift(newTransaction);
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Formu temizle
+            elements.transferForm.reset();
+            
+            // Başarı mesajı göster
+            showSuccess(`Transfer işlemi başarıyla tamamlandı. ${amount.toLocaleString()} HL gönderildi.`);
+            
+            // Verileri güncelle
+            updateAccounts();
+            updateTransactions();
+            
+            // Admin ise admin panelini de güncelle
+            if (state.currentUser.isAdmin) {
+                updateAdminPanel();
+            }
+        }
+
+        // Profil güncelleme
+        function handleProfileUpdate(e) {
+            e.preventDefault();
+            
+            // Gerçek uygulamada API çağrısı yapılacak
+            showSuccess('Profil bilgileriniz başarıyla güncellendi.');
+        }
+
+        // Şifre değiştirme
+        function handleChangePassword(e) {
+            e.preventDefault();
+            
+            const currentPassword = elements.currentPassword.value;
+            const newPassword = elements.newPassword.value;
+            const confirmNewPassword = elements.confirmNewPassword.value;
+            
+            // Validasyon
+            if (!currentPassword || !newPassword || !confirmNewPassword) {
+                showError('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                showError('Yeni şifreler eşleşmiyor.');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                showError('Yeni şifre en az 8 karakter olmalıdır.');
+                return;
+            }
+            
+            // Şifreyi güncelle
+            state.currentUser.password = newPassword;
+            
+            // Durumu kaydet
+            saveState(state);
+            
+            // Formu temizle
+            elements.changePasswordForm.reset();
+            
+            // Başarı mesajı göster
+            showSuccess('Şifreniz başarıyla değiştirildi.');
+        }
+
+        // Çıkış yap
+        function logout() {
+            state.isLoggedIn = false;
+            state.currentUser = null;
+            saveState(state);
+            showUnauthenticatedUI();
+            showSuccess('Başarıyla çıkış yaptınız. Tekrar görüşmek üzere!');
+        }
+
+        // Başarı mesajı göster
+        function showSuccess(message) {
+            elements.successMessage.textContent = message;
+            elements.successToast.show();
+        }
+
+        // Hata mesajı göster
+        function showError(message) {
+            elements.errorMessage.textContent = message;
+            elements.errorToast.show();
+        }
+    </script>
+</body>
+</html>
